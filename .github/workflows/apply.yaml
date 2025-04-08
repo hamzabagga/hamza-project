@@ -1,7 +1,7 @@
 name: Terraform Apply
 
 on:
-  worklflow_dispatch:
+  workflow_dispatch:
 
 
 jobs:
