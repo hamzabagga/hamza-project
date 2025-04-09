@@ -25,3 +25,4 @@ private_subnets = [
     availability_zone = "us-east-1b"
   }
 ]
+igw_name =  "main-igw"

@@ -18,17 +18,7 @@ resource "aws_subnet" "public" {
     Name = each.value.name
   }
 }
-# resource "aws_subnet" "public" {
-#   count                   = 2
-#   vpc_id                  = aws_vpc.main2.id
-#   cidr_block              = "10.0.${count.index + 1}.0/24"  # 10.0.1.0/24, 10.0.2.0/24
-#   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
-#   map_public_ip_on_launch = true  # Required for public subnets
 
-#   tags = {
-#     Name = "public-subnet-${count.index + 1}"
-#   }
-# } 
 
 # 3. Create Private Subnets (2x)
 resource "aws_subnet" "private" {
@@ -43,22 +33,13 @@ resource "aws_subnet" "private" {
     Name = each.value.name
   }
 }
-# resource "aws_subnet" "private" {
-#   count             = 2
-#   vpc_id            = aws_vpc.main2.id
-#   cidr_block        = "10.0.${count.index + 3}.0/24"  # 10.0.3.0/24, 10.0.4.0/24
-#   availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
 
-#   tags = {
-#     Name = "private-subnet-${count.index + 1}"
-#   }
-# }
 
 # 4. Internet Gateway (for public subnets)
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main2.id
   tags = {
-    Name = "main-igw"
+    Name = var.igw_name
   }
 }
 
