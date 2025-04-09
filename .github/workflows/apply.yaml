@@ -2,6 +2,15 @@ name: Terraform Apply
 
 on:
   workflow_dispatch:
+  inputs:
+      workspace:
+        description: "Select the Terraform workspace to use"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          -dev
+          -prod
 
 
 jobs:
@@ -39,7 +48,7 @@ jobs:
   # step 5  : Select Workspace
     - name: Select Workspace
       run: |
-        terraform workspace select dev || terraform workspace new dev     
+        terraform workspace select ${{ github.event.inputs.workspace }} || terraform workspace new ${{ github.event.inputs.workspace }}
 
     # Step 5: Plan Terraform changes
     
