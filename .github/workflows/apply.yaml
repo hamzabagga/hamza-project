@@ -2,15 +2,15 @@ name: Terraform Apply
 
 on:
   workflow_dispatch:
-  inputs:
+    inputs:
       workspace:
         description: "Select the Terraform workspace to use"
         required: true
         default: "dev"
         type: choice
         options:
-          -dev
-          -prod
+          - dev
+          - prod
 
 
 jobs:
