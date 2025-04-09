@@ -2,6 +2,15 @@ name: Terraform Destroy
 
 on:
   workflow_dispatch:
+    inputs:
+      workspace:
+        description: "Select the Terraform workspace to use"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - prod
 
 
 jobs:
@@ -35,6 +44,11 @@ jobs:
     
     - name: Terraform Init
       run: terraform init
+
+        # step 5  : Select Workspace
+    - name: Select Workspace
+      run: |
+        terraform workspace select ${{ github.event.inputs.workspace }} || terraform workspace new ${{ github.event.inputs.workspace }}
 
     # Step 5: Plan Terraform changes
     
