@@ -1,4 +1,4 @@
-vpc_name = "SHvpc"
+vpc_name   = "SHvpc"
 cidr_block = "10.0.0.0/16"
 
 public_subnets = [
@@ -21,7 +21,7 @@ private_subnets = [
   },
   {
     name              = "private-subnet-2",
-    cidr_block        = "10.0.4.0/24", 
+    cidr_block        = "10.0.4.0/24",
     availability_zone = "us-east-1b"
   }
 ]

@@ -73,7 +73,7 @@ resource "aws_eip" "nat_eip" {
 # 6. NAT Gateway (placed in 1st public subnet)
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public[0].id  # Attach to public subnet
+  subnet_id     = values(aws_subnet.public)[0].id # Attach to public subnet
   depends_on    = [aws_internet_gateway.igw]  # Explicit dependency
 
   tags = {
@@ -97,8 +97,9 @@ resource "aws_route_table" "public" {
 
 # 8. Associate Public Subnets with Public Route Table
 resource "aws_route_table_association" "public" {
-  count          = 2
-  subnet_id      = aws_subnet.public[count.index].id
+  for_each = aws_subnet.public
+
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
 }
 
@@ -118,7 +119,8 @@ resource "aws_route_table" "private" {
 
 # 10. Associate Private Subnets with Private Route Table
 resource "aws_route_table_association" "private" {
-  count          = 2
-  subnet_id      = aws_subnet.private[count.index].id
+  for_each = aws_subnet.private
+
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.private.id
 }
