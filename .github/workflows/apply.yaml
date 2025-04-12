@@ -52,7 +52,7 @@ jobs:
 
     # Step 5: Plan Terraform changes
     
-    - name: Terraform Plan
+    - name: Terraform plan
       run: terraform plan
 
     # Step 6: Apply Terraform changes
