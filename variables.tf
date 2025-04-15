@@ -29,3 +29,10 @@ variable "igw_name" {
     type = string
   
 }
+variable "eip_name" {
+    type = string
+}
+
+variable "nat_gateway_name" {
+  type = string
+}

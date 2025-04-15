@@ -23,6 +23,7 @@ resource "aws_subnet" "public" {
   tags = {
     Name = "${var.public_subnets[count.index].name}-${local.env}"
   }
+  depends_on = [ aws_vpc.main2 ]
 }
 
 
@@ -39,6 +40,7 @@ resource "aws_subnet" "private" {
   tags = {
     Name = "${var.private_subnets[count.index].name}-${local.env}"
   }
+  depends_on = [ aws_vpc.main2 ]
 }
 
 
@@ -49,6 +51,7 @@ resource "aws_internet_gateway" "igw" {
   tags = {
     Name = "${var.igw_name}-${local.env}"
   }
+  depends_on = [ aws_vpc.main2 ]
 }
 
 # 5. Elastic IP (for NAT Gateway)
@@ -56,8 +59,9 @@ resource "aws_eip" "nat_eip" {
   count =  length(var.private_subnets)
   domain = "vpc"
   tags = {
-    Name = "nat-gateway-eip-${count.index}-${local.env}"
+    Name = "${var.eip_name}-${count.index}-${local.env}"
   }
+  depends_on = [ aws_internet_gateway.igw ] # Explicit dependency
 }
 
 # 6. NAT Gateway (placed in 1st public subnet)
@@ -65,11 +69,10 @@ resource "aws_nat_gateway" "nat" {
   count =  length(var.private_subnets)
   allocation_id = aws_eip.nat_eip[count.index].id
   subnet_id     = aws_subnet.public[count.index].id # Attach to public subnet
-  depends_on    = [aws_internet_gateway.igw]  # Explicit dependency
-
   tags = {
-    Name = "main-nat-${count.index}-${local.env}"
+    Name = "${var.nat_gateway_name}-${count.index}-${local.env}"
   }
+  depends_on = [ aws_eip.nat_eip, aws_subnet.public] # Explicit dependency
 }
 
 # 7. Public Route Table (routes to Internet Gateway)
@@ -84,6 +87,7 @@ resource "aws_route_table" "public" {
   tags = {
     Name = "public-rt-${local.env}"
   }
+  depends_on = [ aws_internet_gateway.igw , aws_subnet.public] # Explicit dependency
 }
 
 # 8. Associate Public Subnets with Public Route Table
@@ -92,6 +96,7 @@ resource "aws_route_table_association" "public" {
 
   subnet_id      = element(aws_subnet.public[*].id, count.index)
   route_table_id = element(aws_route_table.public[*].id, count.index)
+  depends_on = [ aws_route_table.public, aws_subnet.public] # Explicit dependency
 }
 
 # 9. Private Route Table (routes to NAT Gateway)
@@ -108,6 +113,7 @@ resource "aws_route_table" "private" {
   tags = {
     Name = "private-rt-${count.index}-${local.env}"
   }
+  depends_on = [ aws_nat_gateway.nat, aws_subnet.private] # Explicit dependency
 }
 
 # 10. Associate Private Subnets with Private Route Table
@@ -116,4 +122,5 @@ resource "aws_route_table_association" "private" {
   count =  length(var.private_subnets)
   subnet_id      = element(aws_subnet.private[*].id, count.index)
   route_table_id = element(aws_route_table.private[*].id, count.index)
+  depends_on = [ aws_route_table.private, aws_subnet.private] # Explicit dependency
 }
