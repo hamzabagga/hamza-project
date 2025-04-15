@@ -25,4 +25,7 @@ private_subnets = [
     availability_zone = "us-east-1b"
   }
 ]
-igw_name =  "main-igw"
+igw_name =  "salah-igw"
+
+eip_name = "salah-nat-eip"
+nat_gateway_name = "salah-nat-gateway"
