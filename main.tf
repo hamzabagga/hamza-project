@@ -1,5 +1,9 @@
 locals {
   env = terraform.workspace
+  public_sg_rules_ingress = {for id,rule in csvdecode(file("./sg_rules.csv")): id => rule
+   if rule["sg_name"] == "public_sg" && rule["rule_type"] == "ingress"}
+  private_sg_rules_ingress = {for id,rule in csvdecode(file("./sg_rules.csv")): id => rule
+   if rule["sg_name"] == "private_sg" && rule["rule_type"] == "ingress"}
 }
 
 
@@ -124,3 +128,31 @@ resource "aws_route_table_association" "private" {
   route_table_id = element(aws_route_table.private[*].id, count.index)
   depends_on = [ aws_route_table.private, aws_subnet.private] # Explicit dependency
 }
+
+resource "aws_security_group" "public_sg" {
+  name        = "public-sg"
+  description = "Allow HTTP and SSH"
+  vpc_id      = aws_vpc.main.id  # Ton VPC
+
+  tags = {
+    Name = "web-sg"
+  }
+  depends_on = [ aws_subnet.public ]
+}
+
+resource "aws_security_group" "private_sg" {
+  name        = "private-sg"
+  description = "Allow private access"
+  vpc_id      = aws_vpc.main.id  # Ton VPC
+
+  tags = {
+    Name = "web-sg"
+  }
+  depends_on = [ aws_subnet.private ]
+}
+
+/*resource "aws_security_group_rule" "public_sg_rules" {
+  fo
+  
+}*/
+
