@@ -132,7 +132,7 @@ resource "aws_route_table_association" "private" {
 resource "aws_security_group" "public_sg" {
   name        = "public-sg"
   description = "Allow HTTP and SSH"
-  vpc_id      = aws_vpc.main.id  # Ton VPC
+  vpc_id      = aws_vpc.main2  # Ton VPC
 
   tags = {
     Name = "web-sg"
@@ -143,7 +143,7 @@ resource "aws_security_group" "public_sg" {
 resource "aws_security_group" "private_sg" {
   name        = "private-sg"
   description = "Allow private access"
-  vpc_id      = aws_vpc.main.id  # Ton VPC
+  vpc_id      = aws_vpc.main2  # Ton VPC
 
   tags = {
     Name = "web-sg"
@@ -151,8 +151,26 @@ resource "aws_security_group" "private_sg" {
   depends_on = [ aws_subnet.private ]
 }
 
-/*resource "aws_security_group_rule" "public_sg_rules" {
-  fo
-  
-}*/
+resource "aws_security_group_rule" "public_sg_rules" {
+  for_each = local.public_sg_rules_ingress
 
+  security_group_id = aws_security_group.public_sg.id
+  type              = each.value.rule_type
+  protocol          = each.value.protocol
+  from_port         = split("-", each.value.port_range)[0]
+  to_port           = split("-", each.value.port_range)[1]
+  cidr_blocks       = each.value.dst_cidr != "" ? [each.value.dst_cidr] : null
+  source_security_group_id = each.value.dst_sg != "" ? aws_security_group.private_sg.id : null
+}
+
+resource "aws_security_group_rule" "private_sg_rules" {
+  for_each = local.private_sg_rules_ingress
+
+  security_group_id = aws_security_group.private_sg.id
+  type              = each.value.rule_type
+  protocol          = each.value.protocol
+  from_port         = split("-", each.value.port_range)[0]
+  to_port           = split("-", each.value.port_range)[1]
+  cidr_blocks       = each.value.dst_cidr != "" ? [each.value.dst_cidr] : null
+  source_security_group_id = each.value.dst_sg != "" ? aws_security_group.public_sg.id : null
+}
