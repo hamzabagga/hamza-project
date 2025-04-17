@@ -3,3 +3,8 @@ output "vpc_id" {
     value       = aws_vpc.main2.id
   
 }
+
+output "public_sg_rules_ingress" {
+    value = local.public_sg_rules_ingress
+  
+}
