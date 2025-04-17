@@ -170,7 +170,7 @@ resource "aws_security_group_rule" "private_sg_rules" {
   type              = each.value.rule_type
   protocol          = each.value.protocol
   from_port         = split("-", each.value.port_range)[0]
-  to_port           = split("-", each.value.port_range)[1]
+  to_port           = try(split("-", each.value.port_range)[1])== true ? split("-", each.value.port_range)[1] :  split("-", each.value.port_range)[0]
   cidr_blocks       = each.value.dst_cidr != "" ? [each.value.dst_cidr] : null
   source_security_group_id = each.value.dst_sg != "" ? aws_security_group.public_sg.id : null
 }
