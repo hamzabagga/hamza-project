@@ -37,6 +37,7 @@ variable "nat_gateway_name" {
   type = string
 }
 
+
 variable "env" {
   type = string
  
@@ -44,21 +45,9 @@ variable "env" {
 }
 
 variable "public_sg_rules_ingress" {
-  type = map(object({
-    protocol = string
-    from_port = number
-    to_port = number
-    cidr_blocks = list(string)
-  }))
-  
+  type = any
 }
 
 variable "private_sg_rules_ingress" {
-  type = map(object({
-    protocol = string
-    from_port = number
-    to_port = number
-    cidr_blocks = list(string)
-  }))
-  
+  type = any
 }

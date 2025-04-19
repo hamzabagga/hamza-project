@@ -1,4 +1,4 @@
-vpc_name   = "SHvpc"
+vpc_name   = "med_vpc"
 cidr_block = "10.0.0.0/16"
 
 public_subnets = [
@@ -25,7 +25,7 @@ private_subnets = [
     availability_zone = "us-east-1b"
   }
 ]
-igw_name =  "salah-igw"
+igw_name =  "med-igw"
 
-eip_name = "salah-nat-eip"
-nat_gateway_name = "salah-nat-gateway"
+eip_name = "med-nat-eip"
+nat_gateway_name = "med-nat-gateway"
