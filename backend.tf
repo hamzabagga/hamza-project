@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket       = "med-state-2025"
+    bucket       = "example-terraform-frontend"
     key          = "med/terraform.tfstate"
     region       = "us-east-1"
     encrypt      = true
