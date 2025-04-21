@@ -150,8 +150,9 @@ resource "aws_security_group_rule" "public_sg_rules" {
   protocol          = each.value.protocol
   from_port         = each.value.from_port
   to_port           = each.value.to_port
-  cidr_blocks       = each.value.cidr_blocks
+  cidr_blocks       = each.value.cidr_blocks != "" ? [each.value.cidr_blocks] : null
   source_security_group_id = each.value.dst_sg != "" ? aws_security_group.private_sg.id : null
+  depends_on = [ aws_security_group.public_sg ]
 }
 
 resource "aws_security_group_rule" "private_sg_rules" {
@@ -162,6 +163,7 @@ resource "aws_security_group_rule" "private_sg_rules" {
   protocol          = each.value.protocol
   from_port         = each.value.from_port
   to_port           = each.value.to_port
-  cidr_blocks       = each.value.cidr_blocks
+  cidr_blocks       = each.value.cidr_blocks != "" ? [each.value.cidr_blocks] : null
   source_security_group_id = each.value.dst_sg != "" ? aws_security_group.public_sg.id : null
+  depends_on = [ aws_security_group.private_sg ]
 }

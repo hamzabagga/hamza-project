@@ -29,3 +29,4 @@ igw_name =  "med-igw"
 
 eip_name = "med-nat-eip"
 nat_gateway_name = "med-nat-gateway"
+cluster_name = "med-eks-cluster"

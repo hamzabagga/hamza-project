@@ -37,10 +37,9 @@ variable "nat_gateway_name" {
   type = string
 }
 
-variable "env" {
+variable "cluster_name" {
   type = string
- 
+  
   
 }
-
  
