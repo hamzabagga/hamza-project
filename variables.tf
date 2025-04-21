@@ -43,22 +43,4 @@ variable "env" {
   
 }
 
-variable "public_sg_rules_ingress" {
-  type = map(object({
-    protocol = string
-    from_port = number
-    to_port = number
-    cidr_blocks = list(string)
-  }))
-  
-}
-
-variable "private_sg_rules_ingress" {
-  type = map(object({
-    protocol = string
-    from_port = number
-    to_port = number
-    cidr_blocks = list(string)
-  }))
-  
-}
+ 

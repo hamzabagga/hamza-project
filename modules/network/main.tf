@@ -148,13 +148,9 @@ resource "aws_security_group_rule" "public_sg_rules" {
   security_group_id = aws_security_group.public_sg.id
   type              = each.value.rule_type
   protocol          = each.value.protocol
-  from_port         = split("-", each.value.port_range)[0]
-  to_port = tonumber(
-    length(split("-", each.value.port_range)) == 2 ?
-    split("-", each.value.port_range)[1] :
-    each.value.port_range
-  ) 
-  cidr_blocks       = each.value.dst_cidr != "" ? [each.value.dst_cidr] : null
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
+  cidr_blocks       = each.value.cidr_blocks
   source_security_group_id = each.value.dst_sg != "" ? aws_security_group.private_sg.id : null
 }
 
@@ -164,12 +160,8 @@ resource "aws_security_group_rule" "private_sg_rules" {
   security_group_id = aws_security_group.private_sg.id
   type              = each.value.rule_type
   protocol          = each.value.protocol
-  from_port         = split("-", each.value.port_range)[0]
-  to_port = tonumber(
-    length(split("-", each.value.port_range)) == 2 ?
-    split("-", each.value.port_range)[1] :
-    each.value.port_range
-  )  
-  cidr_blocks       = each.value.dst_cidr != "" ? [each.value.dst_cidr] : null
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
+  cidr_blocks       = each.value.cidr_blocks
   source_security_group_id = each.value.dst_sg != "" ? aws_security_group.public_sg.id : null
 }
