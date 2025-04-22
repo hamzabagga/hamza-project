@@ -67,7 +67,7 @@ locals {
 
 
 module "kubernetes" {
-  source = "./modules/kubernetes"
+  source = "./modules/eks"
   env = local.env
   cluster_name = var.cluster_name
   eks_cluster_role_arn = module.iam.iam_cluster_role_arn

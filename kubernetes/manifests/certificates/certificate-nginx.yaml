@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: med-cheznouslabas-fr-tls
+  namespace: ingress-nginx # Replace with the namespace where your application is deployed
+spec:
+  secretName: med-tls-secret # The secret where the TLS certificate will be stored
+  issuerRef:
+    name: letsencrypt-prod # Reference to the ClusterIssuer
+    kind: ClusterIssuer
+  commonName: med.cheznouslabas.fr
+  dnsNames:
+    - med.cheznouslabas.fr
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx # The ingress class used by the NGINX Ingress Controller
+        domain: med.cheznouslabas.fr # The domain for which the certificate is requested
